@@ -8,16 +8,9 @@
     <meta name="csrf-token">
     <title>sign</title>
     <link rel="stylesheet" href="./public/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./public/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="./public/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./public/css/mprogress.min.css">
     <link rel="stylesheet" href="./public/css/jsondiffpatch_html.css">
-    <link rel="stylesheet" href="./public/css/main.css">
 </head>
 <body>
-    <script src="./public/js/lib/jquery.min.js"></script>
-    <script src="./public/js/lib/bootstrap.min.js"></script>
-    <script src="./public/js/lib/mprogress.min.js"></script>
     <script src="./public/js/lib/jsondiffpatch.min.js"></script>
     <script src="./public/js/lib/jsondiffpatch-formatters.min.js"></script>
     <script src="./public/js/main.js"></script>
@@ -38,7 +31,7 @@
                     </div>
                 </div>
                 <div id="keyStatusPanel" class="panel panel-info">
-                    <div class="panel-heading"><span id="ChoosePKFileText"></span></div>
+                    <div class="panel-heading"><span id="PKStatusInfo"></span></div>
                     <div class="panel-body">
                         <div id="PKCertsSelectZone" hidden="" class="row">
                             <div class="col-sm-2">
@@ -79,28 +72,23 @@
                                 <button id="SignDataButton" onclick="euSignTest.signData()" disabled="" class="btn btn-info pull-right">Підписати</button>
                             </div>
                         </div>
-                        <div id="certInfo" style="display: none" class="alert alert-info"></div>
-                        <div class="alert alert-primary">
-                            <textarea rows="7" id="signInfo" style="width: 100%"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">Перевірка підпису</div>
-                    <div class="panel-body">
-                        <div class="alert alert-danger" style="display: none" id="verificationError">Підпис невірний, модифіковані дані:
-                            <div class="alert alert-warning" id='verificationErrorDiff'></div>
-                        </div>
-                        <div class="alert alert-success" id='verificationSuccess' style="display: none"></div>
-
-                        <button id="VerifyDataButton" onclick="euSignTest.verifyData()" disabled="" class="btn btn-info pull-right">Перевірити</button>
-                        <div class="checkbox pull-right"><label><input type="checkbox" id="cbTestError">Імітація помилки</label>
-                        </div>
                     </div>
                 </div>
             </div>
-            <output id="SelectedCertsList" style="display: none">Сертифікати відсутні в локальному сховищі</output>
-            <output id="SelectedCRLsList" style="display:none">СВС відсутні в локальному сховищі</output>
+        </div>
+        <div id="certInfo" style="display: none" class="alert alert-info"></div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Перевірка підпису</div>
+            <div class="panel-body">
+                <div class="alert alert-danger" style="display: none" id="verificationError">Підпис невірний, модифіковані дані:
+                    <div class="alert alert-warning" id='verificationErrorDiff'></div>
+                </div>
+                <div class="alert alert-success" id='verificationSuccess' style="display: none"></div>
+
+                <button id="VerifyDataButton" onclick="euSignTest.verifyData()" disabled="" class="btn btn-info pull-right">Перевірити</button>
+                <div class="checkbox pull-right"><label><input type="checkbox" id="cbTestError">Імітація помилки</label>
+                </div>
+            </div>
         </div>
         <script src="./public/js/lib/eu/euscpt.js"></script>
         <script src="./public/js/lib/eu/euscpm.js"></script>
