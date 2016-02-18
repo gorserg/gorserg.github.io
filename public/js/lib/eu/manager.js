@@ -1,8 +1,8 @@
 //=============================================================================
 
 var URL_EMAIL_PARAM = "@EMAIL_PARAM";
-var URL_GET_CERTIFICATES = "/sample/data/CACertificates.p7b?version=1.0.5";
-var URL_CAS = "/sample/data/CAs.json?version=1.0.5";
+var URL_GET_CERTIFICATES = "/data/CACertificates.p7b?version=1.0.5";
+var URL_CAS = "/data/CAs.json?version=1.0.5";
 var URL_XML_HTTP_PROXY_SERVICE = "https://vpn.unity-bars.com.ua:40103/proxy/ProxyHandler.ashx";
 
 //=============================================================================
