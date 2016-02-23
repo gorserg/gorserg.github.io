@@ -66,10 +66,10 @@
                                 <input type="password" id="PKeyPassword" style="width: 180px;" class="form-control form-control-sm" autocomplete="off">
                             </div>
                             <div class="col-sm-6">
-                                <button id="PKeyReadButton" onclick="euSignTest.readPrivateKeyButtonClick()" class="btn btn-default">Зчитати</button>
+                                <button id="PKeyReadButton" onclick="euSignMgr.readPrivateKeyButtonClick()" class="btn btn-default">Зчитати</button>
                             </div>
                             <div class="col-sm-2">
-                                <button id="SignDataButton" onclick="euSignTest.signData()" disabled="" class="btn btn-info pull-right">Підписати</button>
+                                <button id="SignDataButton" onclick="euSignMgr.signData()" disabled="" class="btn btn-info pull-right">Підписати</button>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="alert alert-success" id='verificationSuccess' style="display: none"></div>
 
-                <button id="VerifyDataButton" onclick="euSignTest.verifyData()" disabled="" class="btn btn-info pull-right">Перевірити</button>
+                <button id="VerifyDataButton" onclick="euSignMgr.verifyData()" disabled="" class="btn btn-info pull-right">Перевірити</button>
                 <div class="checkbox pull-right"><label><input type="checkbox" id="cbTestError">Імітація помилки</label>
                 </div>
             </div>
@@ -94,7 +94,7 @@
         <script src="./public/js/lib/eu/euscpm.js"></script>
         <script src="./public/js/lib/eu/euscp.js"></script>
         <script src="./public/js/lib/eu/euutils.js"></script>
-        <script src="./public/js/lib/eu/manager.js"></script>
+        <script src="public/js/lib/eu/euscpmgr.js"></script>
         <script type="text/javascript">
             var local_data = {
                 "obj": { "procurementMethod": "open", "status": "active.enquiries", "documents": [{ "format": "application/pkcs7-signature", "url": "https://lb.api-sandbox.openprocurement.org/api/0.11/tenders/d747a479adcb47a5853bd185c90b0f90/documents/2134d73a847542e683022e1759cfbd01?download=ee4b7b03c01c40afa725fa6bf6249fcb", "title": "sign.p7s", "documentOf": "tender", "datePublished": "2016-02-15T13:56:06.172644+02:00", "dateModified": "2016-02-17T10:36:38.398569+02:00", "id": "2134d73a847542e683022e1759cfbd01" }], "tenderPeriod": { "startDate": "2016-04-01T12:50:00+02:00", "endDate": "2016-04-30T13:00:00+02:00" }, "title": "MultyLotAuction", "submissionMethodDetails": "quick", "items": [{ "description": "Item one", "classification": { "scheme": "CPV", "description": "Арахіс", "id": "03111200-4" }, "additionalClassifications": [{ "scheme": "ДКПП", "id": "01.11.83-00.00", "description": "" }], "deliveryAddress": { "postalCode": "02068", "countryName": "ГЕРМАНИЯ", "streetAddress": "aSDAD", "region": "", "locality": "BERLIN" }, "id": "172bf69c898e44a3bdb31b166f49538b", "unit": { "code": "KGM" }, "quantity": 1223 }, { "description": "Item two", "classification": { "scheme": "CPV", "description": "Арахіс", "id": "03111200-4" }, "additionalClassifications": [{ "scheme": "ДКПП", "id": "01.11.83", "description": "" }], "deliveryAddress": { "postalCode": "23123", "countryName": "ГЕРМАНИЯ", "streetAddress": "ASFA", "region": "", "locality": "BERLIN" }, "id": "d6010514ab6c4802bbba0c9b26487fba", "unit": { "code": "KMT" }, "quantity": 123 }], "id": "d747a479adcb47a5853bd185c90b0f90", "procurementMethodType": "belowThreshold", "value": { "currency": "UAH", "amount": 37000, "valueAddedTaxIncluded": false }, "submissionMethod": "electronicAuction", "procuringEntity": { "contactPoint": { "telephone": "056-74-74-950", "name": "Чернов Д.А.", "email": "Denis.Chernov@interpipe.biz" }, "identifier": { "scheme": "UA-EDR", "id": "77788899", "legalName": "Astartia-Энергетика" }, "name": "Astartia-Энергетика", "address": { "postalCode": "", "countryName": "Україна", "streetAddress": "УМАНЬ", "region": "Київська обл.", "locality": "Київ" } }, "minimalStep": { "currency": "UAH", "amount": 2, "valueAddedTaxIncluded": false }, "awardCriteria": "lowestCost", "enquiryPeriod": { "startDate": "2016-02-07T12:32:17.978893+02:00", "endDate": "2016-03-10T12:40:00+02:00" }, "owner": "serg.gorobets", "lots": [{ "status": "active", "description": "", "title": "Lot 1", "minimalStep": { "currency": "UAH", "amount": 2, "valueAddedTaxIncluded": false }, "value": { "currency": "UAH", "amount": 25000, "valueAddedTaxIncluded": false }, "id": "b91f33cbced6434ab8c5091204b36088" }, { "status": "active", "description": "", "title": "Lot 2", "minimalStep": { "currency": "UAH", "amount": 4, "valueAddedTaxIncluded": false }, "value": { "currency": "UAH", "amount": 12000, "valueAddedTaxIncluded": false }, "id": "eeddb185fae647d3aa47313352e03d06" }], "dateModified": "2016-02-17T10:36:38.530204+02:00", "tenderID": "UA-2016-02-07-000043-1" },

@@ -6,10 +6,10 @@ var URL_XML_HTTP_PROXY_SERVICE = "https://vpn.unity-bars.com.ua:40103/proxy/Prox
 
 //=============================================================================
 
-var EUSignCPTest = NewClass({
+var EUSignCPMgr = NewClass({
         "Vendor": "JSC IIT",
         "ClassVersion": "1.0.0",
-        "ClassName": "EUSignCPTest",
+        "ClassName": "EUSignCPMgr",
         "CertsLocalStorageName": "Certificates",
         "CRLsLocalStorageName": "CRLs",
         "recepientsCertsIssuers": null,
@@ -27,7 +27,7 @@ var EUSignCPTest = NewClass({
         "useCMP": false,
         "loadPKCertsFromFile": false,
         "privateKeyCerts": null,
-        // ui elements euSignTest.uiCertList
+        // ui elements euSignMgr.uiCertList
         "uiVerifyBtn": document.getElementById('VerifyDataButton'), // кнопка проверки подписи
         "uiSignBtn": document.getElementById('SignDataButton'), // кнопка наложения подписи
         "uiPkSelectBtn": document.getElementById('PKeySelectFileButton'), // кнопка выбора файла ключа
@@ -59,15 +59,15 @@ var EUSignCPTest = NewClass({
                     euSign.SetCharset("UTF-16LE");
 
                     if (euSign.DoesNeedSetSettings()) {
-                        euSignTest.setDefaultSettings();
+                        euSignMgr.setDefaultSettings();
                     }
-                    euSignTest.loadCertsFromServer();
-                    euSignTest.setCASettings(0);
+                    euSignMgr.loadCertsFromServer();
+                    euSignMgr.setCASettings(0);
 
-                    euSignTest.setSelectPKCertificatesEvents();
+                    euSignMgr.setSelectPKCertificatesEvents();
                     if (utils.IsSessionStorageSupported()) {
                         var _readPrivateKeyAsStoredFile = function () {
-                            euSignTest.readPrivateKeyAsStoredFile();
+                            euSignMgr.readPrivateKeyAsStoredFile();
                         }
                         setTimeout(_readPrivateKeyAsStoredFile, 10);
                     }
@@ -84,7 +84,7 @@ var EUSignCPTest = NewClass({
                     'при завантаженні криптографічної бібліотеки');
             };
 
-            euSignTest.loadCAsSettings(_onSuccess, _onError);
+            euSignMgr.loadCAsSettings(_onSuccess, _onError);
         },
         loadCAsSettings: function (onSuccess, onError) {
             var pThis = this;
@@ -93,7 +93,7 @@ var EUSignCPTest = NewClass({
                 try {
                     var servers = JSON.parse(casResponse.replace(/\\'/g, "'"));
 
-                    var select = euSignTest.uiCaServersSelect;
+                    var select = euSignMgr.uiCaServersSelect;
                     for (var i = 0; i < servers.length; i++) {
                         var option = document.createElement("option");
                         option.text = servers[i].issuerCNs[0];
@@ -121,7 +121,7 @@ var EUSignCPTest = NewClass({
         },
         loadCertsFromServer: function () {
             var certificates = utils.GetSessionStorageItem(
-                euSignTest.CACertificatesSessionStorageName, true, false);
+                euSignMgr.CACertificatesSessionStorageName, true, false);
             if (certificates != null) {
                 try {
                     euSign.SaveCertificates(certificates);
@@ -138,7 +138,7 @@ var EUSignCPTest = NewClass({
                 try {
                     euSign.SaveCertificates(certificates);
                     utils.SetSessionStorageItem(
-                        euSignTest.CACertificatesSessionStorageName,
+                        euSignMgr.CACertificatesSessionStorageName,
                         certificates, false);
                 } catch (e) {
                     console.error(e);
@@ -208,10 +208,10 @@ var EUSignCPTest = NewClass({
                 var useCMP = (!offline && (caServer.cmpAddress != ""));
                 var loadPKCertsFromFile = (caServer == null) || (!useCMP && !caServer.certsInKey);
 
-                euSignTest.CAServer = caServer;
-                euSignTest.offline = offline;
-                euSignTest.useCMP = useCMP;
-                euSignTest.loadPKCertsFromFile = loadPKCertsFromFile;
+                euSignMgr.CAServer = caServer;
+                euSignMgr.offline = offline;
+                euSignMgr.useCMP = useCMP;
+                euSignMgr.loadPKCertsFromFile = loadPKCertsFromFile;
 
                 var message = "Оберіть файл з особистим ключем (зазвичай з ім'ям Key-6.dat) та вкажіть пароль захисту";
                 if (loadPKCertsFromFile) {
@@ -220,8 +220,8 @@ var EUSignCPTest = NewClass({
                 setKeyStatus(message, 'info');
                 var settings;
 
-                euSignTest.uiPkCertsDiv.hidden = loadPKCertsFromFile ? '' : 'hidden';
-                euSignTest.clearPrivateKeyCertificatesList();
+                euSignMgr.uiPkCertsDiv.hidden = loadPKCertsFromFile ? '' : 'hidden';
+                euSignMgr.clearPrivateKeyCertificatesList();
 
                 settings = euSign.CreateTSPSettings();
                 if (!offline) {
@@ -262,49 +262,49 @@ var EUSignCPTest = NewClass({
         },
 //-----------------------------------------------------------------------------
         getCAServer: function () {
-            var index = euSignTest.uiCaServersSelect.selectedIndex;
+            var index = euSignMgr.uiCaServersSelect.selectedIndex;
 
-            if (index < euSignTest.CAsServers.length)
-                return euSignTest.CAsServers[index];
+            if (index < euSignMgr.CAsServers.length)
+                return euSignMgr.CAsServers[index];
 
             return null;
         },
         loadCAServer: function () {
             var index = utils.GetSessionStorageItem(
-                euSignTest.CAServerIndexSessionStorageName, false, false);
+                euSignMgr.CAServerIndexSessionStorageName, false, false);
             if (index != null) {
-                euSignTest.uiCaServersSelect.selectedIndex =
+                euSignMgr.uiCaServersSelect.selectedIndex =
                     parseInt(index);
-                euSignTest.setCASettings(parseInt(index));
+                euSignMgr.setCASettings(parseInt(index));
             }
         },
         storeCAServer: function () {
-            var index = euSignTest.uiCaServersSelect.selectedIndex;
+            var index = euSignMgr.uiCaServersSelect.selectedIndex;
             return utils.SetSessionStorageItem(
-                euSignTest.CAServerIndexSessionStorageName, index.toString(), false);
+                euSignMgr.CAServerIndexSessionStorageName, index.toString(), false);
         },
         removeCAServer: function () {
             utils.RemoveSessionStorageItem(
-                euSignTest.CAServerIndexSessionStorageName);
+                euSignMgr.CAServerIndexSessionStorageName);
         },
 //-----------------------------------------------------------------------------
         storePrivateKey: function (keyName, key, password, certificates) {
             if (!utils.SetSessionStorageItem(
-                    euSignTest.PrivateKeyNameSessionStorageName, keyName, false) || !utils.SetSessionStorageItem(
-                    euSignTest.PrivateKeySessionStorageName, key, false) || !utils.SetSessionStorageItem(
-                    euSignTest.PrivateKeyPasswordSessionStorageName, password, true) || !euSignTest.storeCAServer()) {
+                    euSignMgr.PrivateKeyNameSessionStorageName, keyName, false) || !utils.SetSessionStorageItem(
+                    euSignMgr.PrivateKeySessionStorageName, key, false) || !utils.SetSessionStorageItem(
+                    euSignMgr.PrivateKeyPasswordSessionStorageName, password, true) || !euSignMgr.storeCAServer()) {
                 return false;
             }
 
             if (Array.isArray(certificates)) {
                 if (!utils.SetSessionStorageItems(
-                        euSignTest.PrivateKeyCertificatesSessionStorageName,
+                        euSignMgr.PrivateKeyCertificatesSessionStorageName,
                         certificates, false)) {
                     return false;
                 }
             } else {
                 if (!utils.SetSessionStorageItem(
-                        euSignTest.PrivateKeyCertificatesChainSessionStorageName,
+                        euSignMgr.PrivateKeyCertificatesChainSessionStorageName,
                         certificates, false)) {
                     return false;
                 }
@@ -314,30 +314,30 @@ var EUSignCPTest = NewClass({
         },
         removeStoredPrivateKey: function () {
             utils.RemoveSessionStorageItem(
-                euSignTest.PrivateKeyNameSessionStorageName);
+                euSignMgr.PrivateKeyNameSessionStorageName);
             utils.RemoveSessionStorageItem(
-                euSignTest.PrivateKeySessionStorageName);
+                euSignMgr.PrivateKeySessionStorageName);
             utils.RemoveSessionStorageItem(
-                euSignTest.PrivateKeyPasswordSessionStorageName);
+                euSignMgr.PrivateKeyPasswordSessionStorageName);
             utils.RemoveSessionStorageItem(
-                euSignTest.PrivateKeyCertificatesChainSessionStorageName);
+                euSignMgr.PrivateKeyCertificatesChainSessionStorageName);
             utils.RemoveSessionStorageItem(
-                euSignTest.PrivateKeyCertificatesSessionStorageName);
+                euSignMgr.PrivateKeyCertificatesSessionStorageName);
 
-            euSignTest.removeCAServer();
+            euSignMgr.removeCAServer();
         },
 //-----------------------------------------------------------------------------
         selectPrivateKeyFile: function (event) {
             var enable = (event.target.files.length == 1);
-            euSignTest.uiPkReadBtn.disabled = enable ? '' : 'disabled';
-            euSignTest.uiPkPassword.disabled = enable ? '' : 'disabled';
-            euSignTest.uiPkFileName.value = enable ? event.target.files[0].name : '';
-            euSignTest.uiPkPassword.value = '';
+            euSignMgr.uiPkReadBtn.disabled = enable ? '' : 'disabled';
+            euSignMgr.uiPkPassword.disabled = enable ? '' : 'disabled';
+            euSignMgr.uiPkFileName.value = enable ? event.target.files[0].name : '';
+            euSignMgr.uiPkPassword.value = '';
         },
 //-----------------------------------------------------------------------------
         getPrivateKeyCertificatesByCMP: function (key, password, onSuccess, onError) {
             try {
-                var cmpAddress = euSignTest.getCAServer().cmpAddress + ":80";
+                var cmpAddress = euSignMgr.getCAServer().cmpAddress + ":80";
                 var keyInfo = euSign.GetKeyInfoBinary(key, password);
 
                 onSuccess(euSign.GetCertificatesByKeyInfo(keyInfo, [cmpAddress]));
@@ -347,26 +347,26 @@ var EUSignCPTest = NewClass({
         },
         getPrivateKeyCertificates: function (key, password, fromCache, onSuccess, onError) {
             var certificates;
-            if (euSignTest.CAServer != null &&
-                euSignTest.CAServer.certsInKey) {
+            if (euSignMgr.CAServer != null &&
+                euSignMgr.CAServer.certsInKey) {
                 onSuccess([]);
                 return;
             }
 
             if (fromCache) {
-                if (euSignTest.useCMP) {
+                if (euSignMgr.useCMP) {
                     certificates = utils.GetSessionStorageItem(
-                        euSignTest.PrivateKeyCertificatesChainSessionStorageName, true, false);
-                } else if (euSignTest.loadPKCertsFromFile) {
+                        euSignMgr.PrivateKeyCertificatesChainSessionStorageName, true, false);
+                } else if (euSignMgr.loadPKCertsFromFile) {
                     certificates = utils.GetSessionStorageItems(
-                        euSignTest.PrivateKeyCertificatesSessionStorageName, true, false)
+                        euSignMgr.PrivateKeyCertificatesSessionStorageName, true, false)
                 }
 
                 onSuccess(certificates);
-            } else if (euSignTest.useCMP) {
-                euSignTest.getPrivateKeyCertificatesByCMP(
+            } else if (euSignMgr.useCMP) {
+                euSignMgr.getPrivateKeyCertificatesByCMP(
                     key, password, onSuccess, onError);
-            } else if (euSignTest.loadPKCertsFromFile) {
+            } else if (euSignMgr.loadPKCertsFromFile) {
                 var _onSuccess = function (files) {
                     var certificates = [];
                     for (var i = 0; i < files.length; i++) {
@@ -376,7 +376,7 @@ var EUSignCPTest = NewClass({
                     onSuccess(certificates);
                 };
                 euSign.ReadFiles(
-                    euSignTest.privateKeyCerts,
+                    euSignMgr.privateKeyCerts,
                     _onSuccess, onError);
             }
         },
@@ -387,8 +387,8 @@ var EUSignCPTest = NewClass({
                 setKeyStatus(message, 'error');
 
                 if (fromCache) {
-                    euSignTest.removeStoredPrivateKey();
-                    euSignTest.privateKeyReaded(false);
+                    euSignMgr.removeStoredPrivateKey();
+                    euSignMgr.privateKeyReaded(false);
                 }
             };
 
@@ -398,10 +398,10 @@ var EUSignCPTest = NewClass({
                         _onError(euSign.MakeError(EU_ERROR_CERT_NOT_FOUND));
                         return;
                     }
-                    euSignTest.readPrivateKey(keyName, key, password, certs, fromCache);
+                    euSignMgr.readPrivateKey(keyName, key, password, certs, fromCache);
                 }
 
-                euSignTest.getPrivateKeyCertificates(key, password, fromCache, _onGetCertificates, _onError);
+                euSignMgr.getPrivateKeyCertificates(key, password, fromCache, _onGetCertificates, _onError);
                 return;
             }
 
@@ -417,16 +417,16 @@ var EUSignCPTest = NewClass({
                 euSign.ReadPrivateKeyBinary(key, password);
 
                 if (!fromCache && utils.IsSessionStorageSupported()) {
-                    if (!euSignTest.storePrivateKey(
+                    if (!euSignMgr.storePrivateKey(
                             keyName, key, password, certificates)) {
-                        euSignTest.removeStoredPrivateKey();
+                        euSignMgr.removeStoredPrivateKey();
                     }
                 }
 
-                euSignTest.privateKeyReaded(true);
+                euSignMgr.privateKeyReaded(true);
                 setKeyStatus('Ключ успішно завантажено', 'success')
 
-                euSignTest.showOwnerInfo();
+                euSignMgr.showOwnerInfo();
             } catch (e) {
                 _onError(e);
             }
@@ -457,44 +457,44 @@ var EUSignCPTest = NewClass({
         },
         readPrivateKeyAsStoredFile: function () {
             var keyName = utils.GetSessionStorageItem(
-                euSignTest.PrivateKeyNameSessionStorageName, false, false);
+                euSignMgr.PrivateKeyNameSessionStorageName, false, false);
             var key = utils.GetSessionStorageItem(
-                euSignTest.PrivateKeySessionStorageName, true, false);
+                euSignMgr.PrivateKeySessionStorageName, true, false);
             var password = utils.GetSessionStorageItem(
-                euSignTest.PrivateKeyPasswordSessionStorageName, false, true);
+                euSignMgr.PrivateKeyPasswordSessionStorageName, false, true);
             if (keyName == null || key == null || password == null)
                 return;
 
-            euSignTest.loadCAServer();
+            euSignMgr.loadCAServer();
 
             setStatus('Зчитування ключа');
-            euSignTest.uiPkFileName.value = keyName;
-            euSignTest.uiPkPassword.value = password;
+            euSignMgr.uiPkFileName.value = keyName;
+            euSignMgr.uiPkPassword.value = password;
             var _readPK = function () {
-                euSignTest.readPrivateKey(keyName, key, password, null, true);
+                euSignMgr.readPrivateKey(keyName, key, password, null, true);
             }
             setTimeout(_readPK, 10);
 
             return;
         },
         readPrivateKeyButtonClick: function () {
-            var passwordTextField = euSignTest.uiPkPassword;
-            var certificatesFiles = euSignTest.privateKeyCerts;
+            var passwordTextField = euSignMgr.uiPkPassword;
+            var certificatesFiles = euSignMgr.privateKeyCerts;
 
             var _onError = function (e) {
                 setKeyStatus(e, 'error');
             };
 
             var _onSuccess = function (keyName, key) {
-                euSignTest.readPrivateKey(keyName, new Uint8Array(key),
+                euSignMgr.readPrivateKey(keyName, new Uint8Array(key),
                     passwordTextField.value, null, false);
             }
 
             try {
-                if (euSignTest.uiPkReadBtn.innerText == 'Зчитати') {
+                if (euSignMgr.uiPkReadBtn.innerText == 'Зчитати') {
                     setStatus('Зчитування ключа');
                     setKeyStatus('Зчитування ключа, зачекайте...', 'info');
-                    var files = euSignTest.uiPkFileInput.files;
+                    var files = euSignMgr.uiPkFileInput.files;
 
                     if (files.length != 1) {
                         _onError("Виникла помилка при зчитуванні особистого ключа. " +
@@ -508,7 +508,7 @@ var EUSignCPTest = NewClass({
                         return;
                     }
 
-                    if (euSignTest.loadPKCertsFromFile &&
+                    if (euSignMgr.loadPKCertsFromFile &&
                         (certificatesFiles == null ||
                         certificatesFiles.length <= 0)) {
                         _onError("Виникла помилка при зчитуванні особистого ключа. " +
@@ -517,7 +517,7 @@ var EUSignCPTest = NewClass({
                     }
 
                     if (utils.IsFileImage(files[0])) {
-                        euSignTest.readPrivateKeyAsImage(files[0], _onSuccess, _onError);
+                        euSignMgr.readPrivateKeyAsImage(files[0], _onSuccess, _onError);
                     }
                     else {
                         var _onFileRead = function (readedFile) {
@@ -526,14 +526,14 @@ var EUSignCPTest = NewClass({
                         euSign.ReadFile(files[0], _onFileRead, _onError);
                     }
                 } else {
-                    euSignTest.removeStoredPrivateKey();
+                    euSignMgr.removeStoredPrivateKey();
                     euSign.ResetPrivateKey();
-                    euSignTest.privateKeyReaded(false);
+                    euSignMgr.privateKeyReaded(false);
                     passwordTextField.value = "";
-                    euSignTest.clearPrivateKeyCertificatesList();
+                    euSignMgr.clearPrivateKeyCertificatesList();
                     setKeyStatus('Завантажте ключ', 'info');
-                    euSignTest.uiCertInfo.style.display = 'none';
-                    euSignTest.uiSignBtn.disabled = 'disabled';
+                    euSignMgr.uiCertInfo.style.display = 'none';
+                    euSignMgr.uiSignBtn.disabled = 'disabled';
                 }
             } catch (e) {
                 _onError(e);
@@ -546,9 +546,9 @@ var EUSignCPTest = NewClass({
                 var infoStr = "Власник: <b>" + ownerInfo.GetSubjCN() + "</b><br/>" +
                     "ЦСК: <b>" + ownerInfo.GetIssuerCN() + "</b><br/>" +
                     "Серійний номер: <b>" + ownerInfo.GetSerial() + "</b>";
-                euSignTest.uiCertInfo.innerHTML = infoStr;
-                euSignTest.uiCertInfo.style.display = '';
-                euSignTest.uiSignBtn.disabled = '';
+                euSignMgr.uiCertInfo.innerHTML = infoStr;
+                euSignMgr.uiCertInfo.style.display = '';
+                euSignMgr.uiSignBtn.disabled = '';
 
             } catch (e) {
                 console.log(e);
@@ -582,7 +582,7 @@ var EUSignCPTest = NewClass({
                     }
                     setStatus('');
                     setKeyStatus('Підпису успішно накладено. Триває вставка в ЦБД .... ', 'info');
-                    euSignTest.uiVerifyBtn.disabled = false;
+                    euSignMgr.uiVerifyBtn.disabled = false;
                     local_data.sign = sign;
 
                     /* todo вставка в ЦБД документа з подписью sign
@@ -600,8 +600,8 @@ var EUSignCPTest = NewClass({
         verifyData: function () {
             // todo тут нужно передать содержимое файла с подписью, вычитать по url из documents c {format: "application/pkcs7-signature", title: "sign.p7s"})
             var signedData = local_data.sign;
-            euSignTest.uiVerifyErrorInfo.style.display = 'none';
-            euSignTest.uiVerifySuccessInfo.style.display = 'none';
+            euSignMgr.uiVerifyErrorInfo.style.display = 'none';
+            euSignMgr.uiVerifySuccessInfo.style.display = 'none';
             var isInternalSign = true;
             var isSignHash = false;
             var isGetSignerInfo = true;
@@ -626,8 +626,8 @@ var EUSignCPTest = NewClass({
                         var infoStr = "Підписувач:  <b>" + ownerInfo.GetSubjCN() + "</b><br/>" +
                             "ЦСК:  <b>" + ownerInfo.GetIssuerCN() + "</b><br/>" +
                             "Серійний номер:  <b>" + ownerInfo.GetSerial() + "</b><br/>";
-                        euSignTest.uiCertInfo.innerHTML = infoStr;
-                        euSignTest.uiCertInfo.style.display = '';
+                        euSignMgr.uiCertInfo.innerHTML = infoStr;
+                        euSignMgr.uiCertInfo.style.display = '';
 
                         var timeMark = '';
                         if (timeInfo.IsTimeAvail()) {
@@ -647,12 +647,12 @@ var EUSignCPTest = NewClass({
                             var delta = jsondiffpatch.diff(JSON.parse(signData), JSON.parse(currData));
                             if (!delta) {
                                 var message = "Підпис успішно перевірено<br/>" + timeMark;
-                                euSignTest.uiVerifySuccessInfo.innerHTML = message;
-                                euSignTest.uiVerifySuccessInfo.style.display = '';
+                                euSignMgr.uiVerifySuccessInfo.innerHTML = message;
+                                euSignMgr.uiVerifySuccessInfo.style.display = '';
                             }
                             else {
-                                euSignTest.uiVerifyDiffInfo.innerHTML = jsondiffpatch.formatters.html.format(delta, JSON.parse(currData));
-                                euSignTest.uiVerifyErrorInfo.style.display = '';
+                                euSignMgr.uiVerifyDiffInfo.innerHTML = jsondiffpatch.formatters.html.format(delta, JSON.parse(currData));
+                                euSignMgr.uiVerifyErrorInfo.style.display = '';
                             }
                         }
                     }
@@ -660,8 +660,8 @@ var EUSignCPTest = NewClass({
                 } catch (e) {
                     console.log(e);
                     setStatus('');
-                    euSignTest.uiVerifyErrorInfo.innerHTML = JSON.stringify(e);
-                    euSignTest.uiVerifyErrorInfo.style.display = '';
+                    euSignMgr.uiVerifyErrorInfo.innerHTML = JSON.stringify(e);
+                    euSignMgr.uiVerifyErrorInfo.style.display = '';
                 }
             }
 
@@ -799,8 +799,8 @@ var EUSignCPTest = NewClass({
         },
 //-----------------------------------------------------------------------------
         envelopData: function () {
-            var issuers = euSignTest.recepientsCertsIssuers;
-            var serials = euSignTest.recepientsCertsSerials;
+            var issuers = euSignMgr.recepientsCertsIssuers;
+            var serials = euSignMgr.recepientsCertsSerials;
 
             if (issuers == null || serials == null ||
                 issuers.length <= 0 || serials.length <= 0) {
@@ -881,8 +881,8 @@ var EUSignCPTest = NewClass({
             // setPointerEvents(document.getElementById('DevelopedFileButton'), enable);
         },
         envelopFile: function () {
-            var issuers = euSignTest.recepientsCertsIssuers;
-            var serials = euSignTest.recepientsCertsSerials;
+            var issuers = euSignMgr.recepientsCertsIssuers;
+            var serials = euSignMgr.recepientsCertsSerials;
 
             if (issuers == null || serials == null ||
                 issuers.length <= 0 || serials.length <= 0) {
@@ -994,7 +994,7 @@ var EUSignCPTest = NewClass({
         },
         getOwnCertificate: function (keyType, keyUsage) {
             try {
-                var info = euSignTest.getOwnCertificateInfo(
+                var info = euSignMgr.getOwnCertificateInfo(
                     keyType, keyUsage);
                 if (info == null)
                     return null;
@@ -1018,35 +1018,35 @@ var EUSignCPTest = NewClass({
             }
             setStatus('');
 
-            euSignTest.uiCaServersSelect.disabled = disabled;
-            euSignTest.uiPkSelectBtn.disabled = disabled;
-            euSignTest.uiPkFileName.disabled = disabled;
-            euSignTest.uiPkCertsDiv.hidden = (!isReaded && euSignTest.loadPKCertsFromFile) ? '' : 'hidden';
-            euSignTest.uiPkReadBtn.title = isReaded ? 'Зтерти' : 'Зчитати';
-            euSignTest.uiPkReadBtn.innerHTML = isReaded ? 'Зтерти' : 'Зчитати';
+            euSignMgr.uiCaServersSelect.disabled = disabled;
+            euSignMgr.uiPkSelectBtn.disabled = disabled;
+            euSignMgr.uiPkFileName.disabled = disabled;
+            euSignMgr.uiPkCertsDiv.hidden = (!isReaded && euSignMgr.loadPKCertsFromFile) ? '' : 'hidden';
+            euSignMgr.uiPkReadBtn.title = isReaded ? 'Зтерти' : 'Зчитати';
+            euSignMgr.uiPkReadBtn.innerHTML = isReaded ? 'Зтерти' : 'Зчитати';
 
-            euSignTest.uiPkPassword.disabled = disabled;
+            euSignMgr.uiPkPassword.disabled = disabled;
             if (!isReaded) {
-                euSignTest.uiPkPassword.value = '';
-                euSignTest.uiPkFileName.value = '';
-                euSignTest.uiPkFileInput.value = null;
+                euSignMgr.uiPkPassword.value = '';
+                euSignMgr.uiPkFileName.value = '';
+                euSignMgr.uiPkFileInput.value = null;
             }
         },
         setSelectPKCertificatesEvents: function () {
-            euSignTest.uiCertFileInput.addEventListener(
+            euSignMgr.uiCertFileInput.addEventListener(
                 'change', function (evt) {
                     if (evt.target.files.length <= 0) {
-                        euSignTest.clearPrivateKeyCertificatesList();
+                        euSignMgr.clearPrivateKeyCertificatesList();
                     } else {
-                        euSignTest.privateKeyCerts = evt.target.files;
-                        euSignTest.setFileItemsToList(euSignTest.uiCertList.id, evt.target.files);
+                        euSignMgr.privateKeyCerts = evt.target.files;
+                        euSignMgr.setFileItemsToList(euSignMgr.uiCertList.id, evt.target.files);
                     }
                 }, false);
         },
         clearPrivateKeyCertificatesList: function () {
-            euSignTest.privateKeyCerts = null;
-            euSignTest.uiCertFileInput.value = null;
-            euSignTest.uiCertList.innerHTML = "Сертифікати відкритого ключа не обрано" + '<br>';
+            euSignMgr.privateKeyCerts = null;
+            euSignMgr.uiCertFileInput.value = null;
+            euSignMgr.uiCertList.innerHTML = "Сертифікати відкритого ключа не обрано" + '<br>';
         },
         setItemsToList: function (listId, items) {
             var output = [];
@@ -1068,7 +1068,7 @@ var EUSignCPTest = NewClass({
 
 //=============================================================================
 
-var euSignTest = EUSignCPTest();
+var euSignMgr = EUSignCPMgr();
 var euSign = EUSignCP();
 var utils = Utils(euSign);
 
@@ -1081,7 +1081,7 @@ function setStatus(message) {
 }
 
 function setKeyStatus(message, type) {
-    euSignTest.uiPkStatusInfo.innerHTML = message;
+    euSignMgr.uiPkStatusInfo.innerHTML = message;
     switch (type) {
         case 'error' :
             document.getElementById('keyStatusPanel').className = 'panel panel-danger';
@@ -1101,13 +1101,13 @@ function saveFile(fileName, array) {
 }
 
 function pageLoaded() {
-    euSignTest.uiPkFileInput.addEventListener('change', euSignTest.selectPrivateKeyFile, false);
+    euSignMgr.uiPkFileInput.addEventListener('change', euSignMgr.selectPrivateKeyFile, false);
 }
 
 // init call after initialize euscp.js
 function EUSignCPModuleInitialized(isInitialized) {
     if (isInitialized)
-        euSignTest.initialize();
+        euSignMgr.initialize();
     else
         setKeyStatus("Криптографічну бібліотеку не ініціалізовано", 'error');
 }
