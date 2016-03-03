@@ -491,11 +491,14 @@ var EUSignCPMgr = NewClass({
             }
 
             try {
-                if (euSignMgr.uiPkReadBtn.innerText == 'Зчитати') {
+                console.log(euSignMgr.uiPkReadBtn.title);
+                if (euSignMgr.uiPkReadBtn.title == 'Зчитати') {
                     setStatus('Зчитування ключа');
+                    console.log(2);
                     setKeyStatus('Зчитування ключа, зачекайте...', 'info');
+                    console.log(3);
                     var files = euSignMgr.uiPkFileInput.files;
-
+                    console.log(files.length);
                     if (files.length != 1) {
                         _onError("Виникла помилка при зчитуванні особистого ключа. " +
                             "Опис помилки: файл з особистим ключем не обрано");
