@@ -600,11 +600,31 @@ var EUSignCPMgr = NewClass({
             setStatus('підпис данних');
             setTimeout(_signDataFunction, 10);
         },
-        verifyData: function (use_test_data) {
+        prepareVerifyData: function(apiResourceUrl) {
+            // read documents list
+            $.getJSON(apiResourceUrl + "/documents")
+                .done(function (files) {
+                    for (var i = 0; i < files.data.length; i++) {
+                        var file = files.data[i];
+                        if (file) {
+                            if (file.format === "application/pkcs7-signature" && file.title === "sign.p7s") {
+                                $.ajax({url: file.url})
+                                    .done(function (data) {
+                                        local_data.sign = data;
+                                        euSignMgr.verifyData();
+                                    })
+                            }
+                            else {
+                                euSignMgr.uiVerifyErrorInfo.innerHTML = "Підпису не знайдено";
+                                euSignMgr.uiVerifyErrorInfo.style.display = '';
+                            }
+                        }
+                    }
+                })
+        },
+        verifyData: function () {
             // todo тут нужно передать содержимое файла с подписью, вычитать по url из documents c {format: "application/pkcs7-signature", title: "sign.p7s"})
             var signedData = local_data.sign;
-            if(use_test_data)
-                signedData = local_data.test_sign;
             euSignMgr.uiVerifyErrorInfo.style.display = 'none';
             euSignMgr.uiVerifySuccessInfo.style.display = 'none';
             var isInternalSign = true;
@@ -648,8 +668,6 @@ var EUSignCPMgr = NewClass({
                             // todo remove
                             if (document.getElementById('cbTestError').checked) // для демострации неверной подписи
                                 currData = prepareObject(local_data.obj2);
-                            if(use_test_data)
-                                currData = prepareObject(local_data.test_data);
 
                             jsondiffpatch.formatters.html.hideUnchanged();
                             var delta = jsondiffpatch.diff(JSON.parse(signData), JSON.parse(currData));
