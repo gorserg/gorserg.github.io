@@ -600,9 +600,11 @@ var EUSignCPMgr = NewClass({
             setStatus('підпис данних');
             setTimeout(_signDataFunction, 10);
         },
-        verifyData: function () {
+        verifyData: function (use_test_data) {
             // todo тут нужно передать содержимое файла с подписью, вычитать по url из documents c {format: "application/pkcs7-signature", title: "sign.p7s"})
             var signedData = local_data.sign;
+            if(use_test_data)
+                signedData = local_data.test_sign;
             euSignMgr.uiVerifyErrorInfo.style.display = 'none';
             euSignMgr.uiVerifySuccessInfo.style.display = 'none';
             var isInternalSign = true;
@@ -641,11 +643,14 @@ var EUSignCPMgr = NewClass({
                         }
 
                         if (isInternalSign) {
-                            var signData = euSign.ArrayToString(info.GetData());
+                            var signData = prepareObject(JSON.parse(euSign.ArrayToString(info.GetData())));
                             var currData = prepareObject(local_data.obj);
                             // todo remove
                             if (document.getElementById('cbTestError').checked) // для демострации неверной подписи
                                 currData = prepareObject(local_data.obj2);
+                            if(use_test_data)
+                                currData = prepareObject(local_data.test_data);
+
                             jsondiffpatch.formatters.html.hideUnchanged();
                             var delta = jsondiffpatch.diff(JSON.parse(signData), JSON.parse(currData));
                             if (!delta) {
