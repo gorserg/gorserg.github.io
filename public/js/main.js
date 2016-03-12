@@ -2,6 +2,8 @@
 function prepareObject(json_object) {
     var result = json_object;
     delete result['dateModified'];
+    delete result['next_check'];
+
     // delete documents with signature
     if (json_object.documents) {
         for (var index = json_object.documents.length - 1; index >= 0; index--) {
@@ -10,6 +12,8 @@ function prepareObject(json_object) {
                 result.documents.splice(index, 1);
             }
         }
+        if(result.documents.length === 0)
+            delete result['documents'];
     }
     return JSON.stringify(result);
 }
